@@ -15,6 +15,7 @@ import { addTodo } from "./redux/features/todoSlice";
 import { useFormik } from "formik";
 import { AddTodoSchema } from "./schemas";
 import toast from "react-hot-toast";
+import EditModal from "./EditModal";
 
 export default function App() {
 
@@ -99,6 +100,8 @@ export default function App() {
                 />
               })
             }
+
+            <EditModal />
 
             </MDBCardBody>
           </MDBCard>

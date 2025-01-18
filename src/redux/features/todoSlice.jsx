@@ -6,10 +6,10 @@ export const todoSlice = createSlice({
         value: JSON.parse(localStorage.getItem('todos') || null) || []
         /**
          * {
-         *  id: Date().getTime(),
-         *  Title: string,
-         *  Description: string,
-         *  Pending: Boolean
+         *  id: new Date().getTime(),
+         *  title: string,
+         *  description: string,
+         *  pending: Boolean
          * }
          */
     },

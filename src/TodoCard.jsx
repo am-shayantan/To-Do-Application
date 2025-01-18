@@ -1,13 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { 
-    MDBBtn,
-    MDBModal,
-    MDBModalDialog,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBModalTitle,
-    MDBModalBody,
-    MDBModalFooter,
+import React, { useCallback } from 'react';
+import {
     MDBListGroup,
     MDBListGroupItem,
     MDBCheckbox,
@@ -16,10 +8,9 @@ import {
 } from 'mdb-react-ui-kit';
 import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
-import { deleteTodo, editTodo, togglePending } from './redux/features/todoSlice';
-import { useFormik } from 'formik';
-import { EditTodoSchema } from './schemas';
+import { deleteTodo, togglePending } from './redux/features/todoSlice';
 import toast from 'react-hot-toast';
+import { openEditModal } from './redux/features/editModalSlice';
 
 const TodoCard = ({ id, title, description, pending }) => {
     const dispatch = useDispatch();
@@ -33,9 +24,9 @@ const TodoCard = ({ id, title, description, pending }) => {
         toast.success('To-Do Deleted');
     }, [dispatch, deleteTodo]);
 
-    const [centredModal, setCentredModal] = useState(false);
-  
-    const toggleOpen = () => setCentredModal(!centredModal);
+    const editModalOpener = useCallback(() => {
+      dispatch(openEditModal({ id, title, description }));
+    }, [dispatch, id, title, description, openEditModal])
 
   return (
     <>
@@ -65,14 +56,14 @@ const TodoCard = ({ id, title, description, pending }) => {
             <MDBTooltip
             tag="a"
             wrapperProps={{ href: "#!" }}
-            title="Edit description"
+            title="Edit todo"
             >
             <MDBIcon
                 fas
                 icon="pencil-alt"
                 className="me-3"
                 color="info"
-                onClick={() => setCentredModal(true)}
+                onClick={editModalOpener}
             />
             </MDBTooltip>
             <MDBTooltip
@@ -102,70 +93,8 @@ const TodoCard = ({ id, title, description, pending }) => {
         </div>
         </MDBListGroupItem>
         </MDBListGroup>
-        <EditModal 
-            centredModal={centredModal}
-            setCentredModal={setCentredModal}
-            toggleOpen={toggleOpen}
-            id={id}
-            title={title}
-            description={description}
-        />
     </>
   )
 }
 
 export default TodoCard
-
-const EditModal = ({ centredModal, setCentredModal, toggleOpen, id, title, description }) => {
-
-  const dispatch = useDispatch()
-
-  const { values, errors, handleChange, handleSubmit } = useFormik({
-    initialValues: { id, title, description },
-    validationSchema: EditTodoSchema,
-    onSubmit: () => {
-      dispatch(editTodo(values));
-      setCentredModal(false);
-      toast.success('To-Do Edited');
-    }
-  })
-  
-    return (
-      <>  
-        <MDBModal tabIndex='-1' open={centredModal} onClose={() => setCentredModal(false)}>
-          <MDBModalDialog centered>
-            <MDBModalContent>
-              <form autoComplete='off' onSubmit={handleSubmit}>
-                <MDBModalHeader>
-                  <MDBModalTitle>Edit To-Do</MDBModalTitle>
-                  <MDBBtn type='button' className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
-                </MDBModalHeader>
-                <MDBModalBody>
-                  <input 
-                    className='form-control'
-                    name='title'
-                    value={values.title}
-                    onChange={handleChange}
-                  />
-                  {errors.title && <p className="text-danger px-1">{errors.title}</p>}
-                  <textarea 
-                    className='form-control'
-                    name='description'
-                    value={values.description}
-                    onChange={handleChange}
-                  />
-                </MDBModalBody>
-                <MDBModalFooter>
-                  <MDBBtn type='button' color='secondary' onClick={() => setCentredModal(false)}>
-                    Close
-                  </MDBBtn>
-                  <MDBBtn type='submit'>Save changes</MDBBtn>
-                </MDBModalFooter>
-              </form>
-            </MDBModalContent>
-          </MDBModalDialog>
-        </MDBModal>
-      </>
-    );
-
-}
