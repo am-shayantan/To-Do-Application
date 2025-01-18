@@ -1,8 +1,15 @@
 # React + Vite
+MDB, Redux, React Hot Toast, Formik, Yup
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Get the project up and running
+Clone the repository, run "npm install" to install the dependencies
+run "npm run dev" to start the project
 
-Currently, two official plugins are available:
+# Redux Flow
+The store is stored in the file src/redux/store.js
+The slices are stored in the folder src/redux/features
+The actions and reducers are exported from the file src/redux/features/todoSlice.jsx,
+the store imports the reducers and the actions are imported wherever needed.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The state is pulled using the useSelector hook from react-redux,
+and the actions are dispatched using the useDispatch hook from the same library
